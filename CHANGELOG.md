@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.1.1
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.1.0...v1.1.1)
+
+### 🩹 Fixes
+
+- RuntimeConfig init ([258d6ec](https://github.com/LorexIQ/nuxt-local-auth/commit/258d6ec))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.1.0
 
 
