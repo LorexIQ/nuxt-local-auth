@@ -1,7 +1,7 @@
 {
   "name": "nuxt-local-auth",
   "version": "1.0.0",
-  "repository": "your-org/my-module",
+  "repository": "https://github.com/LorexIQ/nuxt-local-auth",
   "license": "MIT",
   "type": "module",
   "exports": {
