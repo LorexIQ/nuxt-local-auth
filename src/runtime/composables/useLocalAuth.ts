@@ -18,8 +18,8 @@ class LocalAuthError extends Error {
 }
 
 async function getContext() {
-  const options = useRuntimeConfig().public.localAuth as ModuleOptions;
   const nuxt = useNuxtApp();
+  const options = (await callWithNuxt(nuxt, useRuntimeConfig)).public.localAuth as ModuleOptions;
   const state = await callWithNuxt(nuxt, useLocalAuthState);
 
   return {
@@ -101,6 +101,7 @@ async function getMe<T>(): Promise<T> {
     throw new LocalAuthError(`getMe > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
   }
 }
+// async function refreshToken()
 
 export function useLocalAuth() {
   const { data, meta, token } = useLocalAuthState()

@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   ssr: false,
-  modules: ['../src/module'],
+  //modules: ['../src/module'],
+  modules: ['../dist/module'],
 
   localAuth: {
     origin: 'https://catman-dev.atrinix.ru/api/v1/',
