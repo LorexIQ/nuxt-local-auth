@@ -8,6 +8,7 @@
     "generate": "nuxi generate"
   },
   "devDependencies": {
-    "nuxt": "latest"
+    "nuxt": "latest",
+    "nuxt-local-auth": "^1.1.1"
   }
 }

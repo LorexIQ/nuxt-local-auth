@@ -6,7 +6,7 @@ import type {
   UseLocalAuthCredentials,
   UseLocalAuthSession
 } from '../types';
-import { useCookie, useState } from "#app";
+import { useCookie, useState, useRuntimeConfig } from "#app";
 import useUtils from "../composables/useUtils";
 
 const { trimWithSymbol } = useUtils();
