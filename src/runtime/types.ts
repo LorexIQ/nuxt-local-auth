@@ -1,22 +1,22 @@
-type UseLocalAuthData = {
+export type UseLocalAuthData = {
   [name: string]: string;
 };
-type UseLocalAuthResponse = {
+export type UseLocalAuthResponse = {
   [name: string]: any;
 };
-type UseLocalAuthCredentials = {
+export type UseLocalAuthCredentials = {
   [name: string]: any;
 };
-type UseLocalAuthConfig = {
+export type UseLocalAuthConfig = {
   redirectTo: string;
 };
-type UseLocalAuthStatus =
+export type UseLocalAuthStatus =
   | 'authorized'
   | 'unauthorized'
   | 'unknown'
   | 'timeout';
 
-interface UseLocalAuthSession {
+export interface UseLocalAuthSession {
   token: string | null;
   refreshToken: string | null;
   lastSessionUpdate: string | null;

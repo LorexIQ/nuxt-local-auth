@@ -2,6 +2,10 @@ import { useRouter, useNuxtApp, callWithNuxt } from '#app';
 import { computed } from 'vue';
 import useLocalAuthState from './useLocalAuthState';
 import type {ModuleOptions} from "../../module";
+import type {
+  UseLocalAuthData,
+  UseLocalAuthConfig
+} from '../types';
 import useUtils from "./useUtils";
 
 const { trimStartWithSymbol } = useUtils();
