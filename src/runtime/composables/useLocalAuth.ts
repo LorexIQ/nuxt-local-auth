@@ -1,4 +1,4 @@
-import { useRouter, useNuxtApp, callWithNuxt } from '#app';
+import { useRouter, useNuxtApp, callWithNuxt, useRuntimeConfig } from '#app';
 import { computed } from 'vue';
 import useLocalAuthState from './useLocalAuthState';
 import type {ModuleOptions} from "../../module";
