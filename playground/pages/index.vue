@@ -1,10 +1,5 @@
 <script setup lang="ts">
-const route = useRoute()
 const auth = useLocalAuth();
-
-function testSignOut() {
-  auth.signOut();
-}
 
 definePageMeta({
   localAuth: true
@@ -14,6 +9,7 @@ definePageMeta({
 <template>
   <div>
     {{auth}}
-    <button @click="testSignOut">testSignOut</button>
+    <button @click="() => auth.signOut()">testSignOut</button>
+    <button @click="() => auth.refreshTokenWithCheck()">testRefreshToken</button>
   </div>
 </template>

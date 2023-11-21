@@ -22,6 +22,11 @@ interface ModuleOptionsEndpoints {
   * method: 'GET'
   * */
   getMe: ModuleOptionsEndpointConfig;
+  /* Refresh token config. Default:
+  * path: 'auth/refresh
+  * method: 'POST'
+  * */
+  refreshToken?: ModuleOptionsEndpointConfig;
   /* Registration user config. Default: undefined -> disabled
   * */
   signUp?: ModuleOptionsEndpointConfig;
@@ -43,15 +48,23 @@ interface ModuleOptionsToken {
   * Example #2: { data: { accessToken: '...' } } > value: 'data/accessToken'
   * */
   path: string;
-  /* Path to refresh token data. Default: undefined -> refresh disabled
-  * Example #1: { refresh: '...' } > value: 'refresh'
-  * Example #2: { data: { refreshToken: '...' } } > value: 'data/refreshToken'
-  * Example #3: { } > value: undefined
-  * */
-  refreshPath?: string;
   /* Token type. Default: 'Bearer'
   * */
   type?: string;
+}
+interface ModuleOptionsRefreshToken {
+  /* Enabled refresh sessions in app. Default: false
+  * */
+  enabled: boolean;
+  /* Path to refresh token data. Default: 'refresh'
+  * Example #1: { refresh: '...' } > value: 'refresh'
+  * Example #2: { data: { refreshToken: '...' } } > value: 'data/refreshToken'
+  * */
+  path?: string;
+  /* Name of key token in body request. Default: 'refresh'
+  * Example: { refresh '...' } > value: 'refresh'
+  * */
+  bodyKey?: string;
 }
 interface ModuleOptionsPages {
   /* Page for authorization in the system. Default: '/login'
@@ -72,6 +85,7 @@ export interface ModuleOptions {
   * */
   cookiePrefix?: string;
   token: ModuleOptionsToken;
+  refreshToken: ModuleOptionsRefreshToken;
   endpoints: ModuleOptionsEndpoints;
   pages: ModuleOptionsPages;
 }
@@ -87,12 +101,17 @@ export default defineNuxtModule<ModuleOptions>({
     token: {
       lifetime: 86400,
       path: 'token',
-      refreshPath: undefined,
       type: 'Bearer'
+    },
+    refreshToken: {
+      enabled: false,
+      path: 'refresh',
+      bodyKey: 'refresh'
     },
     endpoints: {
       signIn: { path: 'auth/signIn', method: 'POST' },
       getMe: { path: 'users/me', method: 'GET' },
+      refreshToken: { path: 'auth/refresh', method: 'POST' },
       signUp: undefined,
       signOut: undefined
     },

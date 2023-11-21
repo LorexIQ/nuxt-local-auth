@@ -1,6 +1,7 @@
 import { useRouter, useNuxtApp, callWithNuxt, useRuntimeConfig } from '#app';
 import { computed } from 'vue';
 import useLocalAuthState from './useLocalAuthState';
+import { LocalAuthError } from '../errors';
 import type {ModuleOptions} from "../../module";
 import type {
   UseLocalAuthData,
@@ -9,13 +10,6 @@ import type {
 import useUtils from "./useUtils";
 
 const { trimStartWithSymbol } = useUtils();
-
-class LocalAuthError extends Error {
-  constructor(message: string = '') {
-    super(message);
-    this.name = 'LocalAuthError';
-  }
-}
 
 async function getContext() {
   const nuxt = useNuxtApp();
@@ -101,7 +95,59 @@ async function getMe<T>(): Promise<T> {
     throw new LocalAuthError(`getMe > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
   }
 }
-// async function refreshToken()
+async function refreshToken<T>(): Promise<T> {
+  const { options, state: { origin, meta, saveSession, clearSession } } = await getContext();
+  const endpointConfig = options.endpoints.refreshToken!;
+  const refreshConfig = options.refreshToken;
+
+  if (refreshConfig.enabled) {
+    try {
+      const refreshData = await $fetch(
+        `${origin}/${trimStartWithSymbol(endpointConfig.path, '/')}`,
+        {
+          method: endpointConfig.method,
+          body: {
+            [`${refreshConfig.bodyKey}`]: meta.value.refreshToken
+          }
+        }
+      );
+
+      saveSession({
+        [`${refreshConfig.path}`]: meta.value.refreshToken,
+        ...refreshData
+      }, true);
+
+      return refreshData;
+    } catch (e: any) {
+      throw new LocalAuthError(`refreshToken > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+    }
+
+  } else {
+    throw new LocalAuthError('refreshToken > refresh token is disabled. Enable it in refreshToken/enabled');
+  }
+}
+async function refreshTokenWithCheck<T>(): Promise<T | null> {
+  const {
+    options: {
+      refreshToken: refreshTokenConfig,
+      token: tokenConfig
+    },
+    state: {
+      meta
+    }
+  } = await getContext();
+  const metaData = meta.value;
+
+  try {
+    if (!refreshTokenConfig.enabled) throw Error('refresh token is disabled. Enable it in refreshToken/enabled');
+    if (metaData.status !== 'authorized') throw Error('session is not found. Use signIn');
+    if (Date.now() < +meta.value.exp! * 1000) return null;
+
+    return await refreshToken();
+  } catch (e: any) {
+    throw new LocalAuthError(`refreshTokenWithCheck > ${e.message}`);
+  }
+}
 
 export function useLocalAuth() {
   const { data, meta, token } = useLocalAuthState()
@@ -115,7 +161,9 @@ export function useLocalAuth() {
   const actions = {
     signIn,
     signOut,
-    getMe
+    getMe,
+    refreshToken,
+    refreshTokenWithCheck
   };
 
   return {

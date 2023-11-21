@@ -1,13 +1,4 @@
-<!--
-Get your module up and running quickly.
-
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: my-module
-- Description: My new Nuxt module
--->
-
-# My Module
+# Nuxt Local Auth
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -23,36 +14,36 @@ My new Nuxt module for doing amazing things.
 ## Features
 
 <!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
+- Refresh token
+- SignUp user registration
+- SignIn with url context token
 
 ## Quick Setup
 
-1. Add `my-module` dependency to your project
+1. Add `nuxt-local-auth` dependency to your project
 
 ```bash
 # Using pnpm
-pnpm add -D my-module
+pnpm add -D nuxt-local-auth
 
 # Using yarn
-yarn add --dev my-module
+yarn add --dev nuxt-local-auth
 
 # Using npm
-npm install --save-dev my-module
+npm install --save-dev nuxt-local-auth
 ```
 
-2. Add `my-module` to the `modules` section of `nuxt.config.ts`
+2. Add `nuxt-local-auth` to the `modules` section of `nuxt.config.ts`
 
-```js
+```ts
 export default defineNuxtConfig({
   modules: [
-    'my-module'
+    'nuxt-local-auth'
   ]
 })
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+That's it! You can now use Nuxt Local Auth in your Nuxt app ✨
 
 ## Development
 
@@ -69,26 +60,19 @@ npm run dev
 # Build the playground
 npm run dev:build
 
-# Run ESLint
-npm run lint
-
-# Run Vitest
-npm run test
-npm run test:watch
-
 # Release new version
 npm run release
 ```
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
-[npm-version-href]: https://npmjs.com/package/my-module
+[npm-version-src]: https://img.shields.io/npm/v/nuxt-local-auth/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-href]: https://npmjs.com/package/nuxt-local-auth
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[npm-downloads-href]: https://npmjs.com/package/my-module
+[npm-downloads-src]: https://img.shields.io/npm/dm/nuxt-local-auth.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-href]: https://npmjs.com/package/nuxt-local-auth
 
-[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[license-href]: https://npmjs.com/package/my-module
+[license-src]: https://img.shields.io/npm/l/nuxt-local-auth.svg?style=flat&colorA=18181B&colorB=28CF8D
+[license-href]: https://npmjs.com/package/nuxt-local-auth
 
 [nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
 [nuxt-href]: https://nuxt.com

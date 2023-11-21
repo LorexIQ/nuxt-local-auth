@@ -19,6 +19,6 @@ export type UseLocalAuthStatus =
 export interface UseLocalAuthSession {
   token: string | null;
   refreshToken: string | null;
-  lastSessionUpdate: string | null;
+  exp: string | null;
   status: UseLocalAuthStatus;
 }

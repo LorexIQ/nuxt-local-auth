@@ -19,7 +19,7 @@ export default function () {
   const sessionMetaInfo: Ref<UseLocalAuthSession> = useState('localAuth:Meta', () => ({
     token: null,
     refreshToken: null,
-    lastSessionUpdate: null,
+    exp: null,
     status: 'unknown'
   }));
 
@@ -33,7 +33,7 @@ export default function () {
 
           value.token = decodeCookie.token;
           value.refreshToken = decodeCookie.refreshToken;
-          value.lastSessionUpdate = decodeCookie.lastSessionUpdate;
+          value.exp = decodeCookie.exp;
           value.status = decodeCookie.status;
         }
       } catch (e) {}
@@ -43,11 +43,19 @@ export default function () {
   const token = computed(() => sessionMetaInfo.value.token ? `${options.token.type} ${sessionMetaInfo.value.token}`.trim() : null);
   const origin = trimWithSymbol(options.origin, '/');
 
+  function softClearSession(): void {
+    sessionMetaInfo.value = {
+      token: null,
+      refreshToken: null,
+      exp: null,
+      status: sessionMetaInfo.value.status
+    };
+  }
   function clearSession(): void {
     sessionMetaInfo.value = {
       token: null,
       refreshToken: null,
-      lastSessionUpdate: null,
+      exp: null,
       status: 'unauthorized'
     };
 
@@ -55,25 +63,39 @@ export default function () {
       delete sessionData.value[key];
     }
   }
-  function saveSession(data: UseLocalAuthResponse): void {
-    clearSession();
-
-    const parsedToken = options.token.path
-      .split('/')
-      .reduce((accum, current) => accum = accum[current], data) as unknown as string | undefined;
-
-    if (!parsedToken) throw new Error('error parse auth token. Check current token/path');
-    sessionMetaInfo.value.token = parsedToken as string;
-
-    if (options.token.refreshPath) {
-      const parsedRefreshToken = options.token.refreshPath
-        .split('/')
-        .reduce((accum, current) => accum = accum[current], data) as unknown as string | undefined;
-      if (!parsedToken) throw new Error('error parse refresh token. Check current token/refreshPath');
-      sessionMetaInfo.value.refreshToken = parsedRefreshToken as string;
+  function saveSession(data: UseLocalAuthResponse, metaUpdate: boolean = false): void {
+    function parseValueWithPath(data: UseLocalAuthResponse, path: string): string | undefined {
+      return path
+          .split('/')
+          .reduce((accum, current) => {
+            if (!accum) return undefined;
+            accum = accum[current];
+            return accum;
+          }, data as UseLocalAuthResponse | undefined) as string | undefined;
     }
 
-    sessionMetaInfo.value.lastSessionUpdate = `${Math.round(Date.now() / 1000)}`;
+    metaUpdate ? softClearSession() : clearSession();
+    let parsedToken, parsedRefreshToken, parsedLifetime;
+
+    parsedToken = parseValueWithPath(data, options.token.path);
+    if (!parsedToken) throw new Error('error parse auth token. Check current token/path');
+
+    if (options.refreshToken.enabled) {
+      parsedRefreshToken = parseValueWithPath(data, options.refreshToken.path!);
+      if (!parsedToken) throw new Error('error parse refresh token. Check current token/refreshPath');
+    }
+
+    const lifetime = options.token.lifetime as string | number;
+    if (typeof options.token.lifetime === 'string') {
+      parsedLifetime = parseValueWithPath(data, options.token.lifetime!);
+      if (!parsedLifetime) throw new Error('error parse lifetime token. Check current token/lifetime');
+    } else {
+      parsedLifetime = `${Math.round(Date.now() / 1000) + (lifetime as number)}`;
+    }
+
+    sessionMetaInfo.value.token = parsedToken as string;
+    sessionMetaInfo.value.refreshToken = parsedRefreshToken as string;
+    sessionMetaInfo.value.exp = `${parsedLifetime}`;
   }
 
   const getters = {
