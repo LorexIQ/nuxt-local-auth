@@ -96,7 +96,7 @@ async function getMe<T>(): Promise<T> {
   }
 }
 async function refreshToken<T>(): Promise<T> {
-  const { options, state: { origin, meta, saveSession, clearSession } } = await getContext();
+  const { options, state: { origin, meta, saveSession } } = await getContext();
   const endpointConfig = options.endpoints.refreshToken!;
   const refreshConfig = options.refreshToken;
 
@@ -127,15 +127,7 @@ async function refreshToken<T>(): Promise<T> {
   }
 }
 async function refreshTokenWithCheck<T>(): Promise<T | null> {
-  const {
-    options: {
-      refreshToken: refreshTokenConfig,
-      token: tokenConfig
-    },
-    state: {
-      meta
-    }
-  } = await getContext();
+  const { options: { refreshToken: refreshTokenConfig }, state: { meta } } = await getContext();
   const metaData = meta.value;
 
   try {
