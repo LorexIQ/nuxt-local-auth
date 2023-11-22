@@ -11,11 +11,6 @@ My new Nuxt module for doing amazing things.
 <!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/my-module?file=playground%2Fapp.vue) -->
 <!-- - [📖 &nbsp;Documentation](https://example.com) -->
 
-## Features
-
-<!-- Highlight some of the features your module provide here -->
-- self redirects paths in signIn, signUp, ... methods
-
 ## Quick Setup
 
 1. Add `nuxt-local-auth` dependency to your project
