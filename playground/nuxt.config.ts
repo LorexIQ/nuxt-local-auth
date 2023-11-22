@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     },
     endpoints: {
       signIn: { path: '/auth/', method: 'POST' },
+      signUp: { path: '/auth/reg', method: 'POST' },
       getMe: { path: 'users/me/', method: 'GET' },
       refreshToken: { path: '/auth/refresh/', method: 'POST' }
     }

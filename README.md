@@ -14,8 +14,6 @@ My new Nuxt module for doing amazing things.
 ## Features
 
 <!-- Highlight some of the features your module provide here -->
-- Refresh token
-- SignUp user registration
 - SignIn with url context token
 
 ## Quick Setup

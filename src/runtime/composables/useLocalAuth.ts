@@ -27,6 +27,26 @@ async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
     else throw new LocalAuthError(e.message);
   }
 }
+async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
+  const { options, state: { saveSession } } = await getContext();
+  const router = useRouter();
+  const endpointConfig = options.endpoints.signUp!;
+
+  if (!endpointConfig) throw new LocalAuthError('signUp > signUp is disabled. Enable it in endpoints/signUp');
+
+  try {
+    const signUpData = await fetch<T>(endpointConfig, { body: data });
+
+    saveSession(signUpData);
+    await getMe();
+    await router.push(config?.redirectTo ?? options.pages.defaultRedirect!);
+
+    return signUpData;
+  } catch (e: any) {
+    if (e.response) throw new LocalAuthError(`signUp > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+    else throw new LocalAuthError(e.message);
+  }
+}
 async function signOut<T extends UseLocalAuthResponse = {}>(config?: UseLocalAuthConfig): Promise<T> {
   const { options, state: { clearSession } } = await getContext();
   const router = useRouter();
@@ -122,6 +142,7 @@ export function useLocalAuth() {
 
   const actions = {
     signIn,
+    signUp,
     signOut,
     getMe,
     refreshToken,
