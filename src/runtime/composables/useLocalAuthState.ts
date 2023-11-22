@@ -15,7 +15,7 @@ export default function () {
   const options = useRuntimeConfig().public.localAuth as ModuleOptions;
 
   const sessionData = useState<UseLocalAuthCredentials>('localAuth:Credentials', () => ({}));
-  const cookieData = useState('localAuth:Cookie', () => useCookie<UseLocalAuthSession | null>('localAuth', { default: () => null }));
+  const cookieData = useState('localAuth:Cookie', () => useCookie<UseLocalAuthSession | null>(options.sessions.cookiePrefix!, { default: () => null }));
   const sessionMetaInfo: Ref<UseLocalAuthSession> = useState('localAuth:Meta', () => ({
     token: null,
     refreshToken: null,

@@ -9,6 +9,9 @@ export default defineNuxtConfig({
       lifetime: 5,
       path: 'access'
     },
+    sessions: {
+      refreshEvery: 5000
+    },
     refreshToken: {
       enabled: true
     },

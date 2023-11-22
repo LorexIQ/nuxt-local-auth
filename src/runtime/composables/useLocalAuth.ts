@@ -1,40 +1,21 @@
-import { useRouter, useNuxtApp, callWithNuxt, useRuntimeConfig } from '#app';
-import { computed } from 'vue';
-import useLocalAuthState from './useLocalAuthState';
-import { LocalAuthError } from '../errors';
-import type {ModuleOptions} from "../../module";
 import type {
   UseLocalAuthData,
-  UseLocalAuthConfig
+  UseLocalAuthConfig,
+  UseLocalAuthResponse
 } from '../types';
-import useUtils from "./useUtils";
+import { useRouter } from '#app';
+import { computed } from 'vue';
+import { LocalAuthError } from '../errors';
+import { fetch, getContext } from '../helpers';
+import useLocalAuthState from './useLocalAuthState';
 
-const { trimStartWithSymbol } = useUtils();
-
-async function getContext() {
-  const nuxt = useNuxtApp();
-  const options = (await callWithNuxt(nuxt, useRuntimeConfig)).public.localAuth as ModuleOptions;
-  const state = await callWithNuxt(nuxt, useLocalAuthState);
-
-  return {
-    options,
-    state
-  };
-}
-
-async function signIn<T = void>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
-  const { options, state: { origin, saveSession } } = await getContext();
+async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
+  const { options, state: { saveSession } } = await getContext();
   const router = useRouter();
   const endpointConfig = options.endpoints.signIn!;
 
   try {
-    const authData = await $fetch(
-      `${origin}/${trimStartWithSymbol(endpointConfig.path, '/')}`,
-      {
-        method: endpointConfig.method,
-        body: data
-      }
-    );
+    const authData = await fetch<T>(endpointConfig, { body: data });
 
     saveSession(authData);
     await getMe();
@@ -46,19 +27,14 @@ async function signIn<T = void>(data: UseLocalAuthData, config?: UseLocalAuthCon
     else throw new LocalAuthError(e.message);
   }
 }
-async function signOut(config?: UseLocalAuthConfig): Promise<void> {
-  const { options, state: { origin, clearSession } } = await getContext();
+async function signOut<T extends UseLocalAuthResponse = {}>(config?: UseLocalAuthConfig): Promise<T> {
+  const { options, state: { clearSession } } = await getContext();
   const router = useRouter();
   const endpointConfig = options.endpoints.signOut!;
 
   if (options.endpoints.signOut) {
     try {
-      await $fetch(
-        `${origin}/${trimStartWithSymbol(endpointConfig.path, '/')}`,
-        {
-          method: endpointConfig.method
-        }
-      );
+      return await fetch<T>(endpointConfig, { withToken: true });
     } catch (e: any) {
       throw new LocalAuthError(`signOut > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
     } finally {
@@ -68,49 +44,42 @@ async function signOut(config?: UseLocalAuthConfig): Promise<void> {
   } else {
     clearSession();
     await router.push(config?.redirectTo ?? options.pages.auth!);
+    return {} as T;
   }
 }
-async function getMe<T>(): Promise<T> {
-  const { options, state: { token, origin, data, meta } } = await getContext();
+async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
+  const { options, state: { token, data, meta } } = await getContext();
   const endpointConfig = options.endpoints.getMe!;
 
-  if (!token.value) throw new LocalAuthError('getMe > token is null. logout...');
+  if (!token.value) throw new LocalAuthError('getMe > token is null. SignIn first');
 
   try {
-    const meData = await $fetch(
-      `${origin}/${trimStartWithSymbol(endpointConfig.path, '/')}`,
-      {
-        method: endpointConfig.method,
-        headers: {
-          'Authorization': token.value
-        }
-      }
-    );
+    const meData = await fetch<T>(endpointConfig, { withToken: true });
 
     Object.assign(data.value, meData);
     meta.value.status = 'authorized';
 
     return meData;
   } catch (e: any) {
-    throw new LocalAuthError(`getMe > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+    if (e.statusCode) {
+      throw new LocalAuthError(`getMe > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+    } else {
+      throw new LocalAuthError(`getMe > ${e.message}`);
+    }
   }
 }
-async function refreshToken<T>(): Promise<T> {
-  const { options, state: { origin, meta, saveSession } } = await getContext();
+async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
+  const { options, state: { meta, saveSession } } = await getContext();
   const endpointConfig = options.endpoints.refreshToken!;
   const refreshConfig = options.refreshToken;
 
   if (refreshConfig.enabled) {
     try {
-      const refreshData = await $fetch(
-        `${origin}/${trimStartWithSymbol(endpointConfig.path, '/')}`,
-        {
-          method: endpointConfig.method,
-          body: {
-            [`${refreshConfig.bodyKey}`]: meta.value.refreshToken
-          }
+      const refreshData = await fetch<T>(endpointConfig, {
+        body: {
+          [`${refreshConfig.bodyKey}`]: meta.value.refreshToken!
         }
-      );
+      });
 
       saveSession({
         [`${refreshConfig.path}`]: meta.value.refreshToken,
@@ -126,7 +95,7 @@ async function refreshToken<T>(): Promise<T> {
     throw new LocalAuthError('refreshToken > refresh token is disabled. Enable it in refreshToken/enabled');
   }
 }
-async function refreshTokenWithCheck<T>(): Promise<T | null> {
+async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Promise<T | null> {
   const { options: { refreshToken: refreshTokenConfig }, state: { meta } } = await getContext();
   const metaData = meta.value;
 
@@ -135,7 +104,7 @@ async function refreshTokenWithCheck<T>(): Promise<T | null> {
     if (metaData.status !== 'authorized') throw Error('session is not found. Use signIn');
     if (Date.now() < +meta.value.exp! * 1000) return null;
 
-    return await refreshToken();
+    return await refreshToken<T>();
   } catch (e: any) {
     throw new LocalAuthError(`refreshTokenWithCheck > ${e.message}`);
   }

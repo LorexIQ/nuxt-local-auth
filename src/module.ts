@@ -7,7 +7,7 @@ import {
 } from '@nuxt/kit'
 import defu from "defu";
 
-interface ModuleOptionsEndpointConfig {
+export interface ModuleOptionsEndpointConfig {
   path: string;
   method: 'POST' | 'GET';
 }
@@ -66,6 +66,17 @@ interface ModuleOptionsRefreshToken {
   * */
   bodyKey?: string;
 }
+interface ModuleOptionsSession {
+  /* Enabled refresh user data every N ms. Default: undefined
+  * Example: one getMe request in 5 seconds. value > 5000
+  * Example: disable refresh. value > undefined
+  * */
+  refreshEvery?: number;
+  /* Cookie prefix in app storage. Default: localAuth
+  * Example: localAuth:token -> {token}
+  * */
+  cookiePrefix?: string;
+}
 interface ModuleOptionsPages {
   /* Page for authorization in the system. Default: '/login'
   * */
@@ -73,6 +84,10 @@ interface ModuleOptionsPages {
   /* The standard page where to redirect the user after logging in. Default: '/'
   * */
   defaultRedirect?: string;
+  /* A page for catching a server shutdown when it is impossible to
+  * get session data due to a timeout. Default: '/error'
+  * */
+  serverIsDown?: string;
 }
 export interface ModuleOptions {
   /* Path to server. Default: ''
@@ -80,10 +95,7 @@ export interface ModuleOptions {
   * Example: 'api' - local nuxt server
   * */
   origin: string;
-  /* Cookie prefix in app storage. Default: localAuth
-  * Example: localAuth:token -> {token}
-  * */
-  cookiePrefix?: string;
+  sessions: ModuleOptionsSession;
   token: ModuleOptionsToken;
   refreshToken: ModuleOptionsRefreshToken;
   endpoints: ModuleOptionsEndpoints;
@@ -97,7 +109,10 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {
     origin: '',
-    cookiePrefix: 'localAuth',
+    sessions: {
+      refreshEvery: undefined,
+      cookiePrefix: 'localAuth',
+    },
     token: {
       lifetime: 86400,
       path: 'token',

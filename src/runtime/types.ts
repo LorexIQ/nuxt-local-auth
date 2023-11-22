@@ -22,3 +22,7 @@ export interface UseLocalAuthSession {
   exp: string | null;
   status: UseLocalAuthStatus;
 }
+export interface UseLocalAuthFetchConfig {
+  withToken?: boolean;
+  body?: UseLocalAuthData;
+}
