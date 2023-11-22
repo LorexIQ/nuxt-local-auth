@@ -63,6 +63,13 @@ export default function () {
       delete sessionData.value[key];
     }
   }
+  function softSaveSession(token: string, refreshToken: string | null): void {
+    clearSession();
+
+    sessionMetaInfo.value.token = token;
+    sessionMetaInfo.value.refreshToken = refreshToken;
+    sessionMetaInfo.value.exp = `${Math.round(Date.now() / 1000) + (options.token.lifetime as number)}`;
+  }
   function saveSession(data: UseLocalAuthResponse, metaUpdate: boolean = false): void {
     function parseValueWithPath(data: UseLocalAuthResponse, path: string): string | undefined {
       return path
@@ -106,7 +113,8 @@ export default function () {
   };
   const actions = {
     clearSession,
-    saveSession
+    saveSession,
+    softSaveSession
   };
 
   return {

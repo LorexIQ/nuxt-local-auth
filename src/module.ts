@@ -51,6 +51,11 @@ interface ModuleOptionsToken {
   /* Token type. Default: 'Bearer'
   * */
   type?: string;
+  /* Reading the token from the query parameter of the url string. Default: undefined
+  * Example #1: https://.../{pages/auth}?token=.... value > 'token'
+  * Example #2: reading is disabled. value > undefined
+  * */
+  queryKey?: string;
 }
 interface ModuleOptionsRefreshToken {
   /* Enabled refresh sessions in app. Default: false
@@ -65,6 +70,11 @@ interface ModuleOptionsRefreshToken {
   * Example: { refresh '...' } > value: 'refresh'
   * */
   bodyKey?: string;
+  /* Reading the token from the query parameter of the url string. Default: 'refresh'
+  * Example #1: https://.../{pages/auth}?refresh=.... value > 'refresh'
+  * Example #2: reading is disabled. value > undefined
+  * */
+  queryKey?: string;
 }
 interface ModuleOptionsSession {
   /* Enabled refresh user data every N ms. Default: undefined
@@ -121,12 +131,14 @@ export default defineNuxtModule<ModuleOptions>({
     token: {
       lifetime: 86400,
       path: 'token',
-      type: 'Bearer'
+      type: 'Bearer',
+      queryKey: undefined,
     },
     refreshToken: {
       enabled: false,
       path: 'refresh',
-      bodyKey: 'refresh'
+      bodyKey: 'refresh',
+      queryKey: 'refresh'
     },
     endpoints: {
       signIn: { path: 'auth/signIn', method: 'POST' },

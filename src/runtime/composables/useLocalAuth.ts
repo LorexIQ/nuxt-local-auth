@@ -3,7 +3,7 @@ import type {
   UseLocalAuthConfig,
   UseLocalAuthResponse
 } from '../types';
-import { useRouter } from '#app';
+import { useRouter, useRoute } from '#app';
 import { computed } from 'vue';
 import { LocalAuthError } from '../errors';
 import { fetch, getContext } from '../helpers';
@@ -95,6 +95,8 @@ async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   const refreshConfig = options.refreshToken;
 
   if (refreshConfig.enabled) {
+    if (!meta.value.refreshToken) throw new LocalAuthError(`refreshToken > refreshToken is null`);
+
     try {
       const refreshData = await fetch<T>(endpointConfig, {
         body: {
@@ -120,6 +122,8 @@ async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Pro
   const { options: { refreshToken: refreshTokenConfig }, state: { meta } } = await getContext();
   const metaData = meta.value;
 
+  if (!metaData.refreshToken) throw new LocalAuthError(`refreshTokenWithCheck > refreshToken is null`);
+
   try {
     if (!refreshTokenConfig.enabled) throw Error('refresh token is disabled. Enable it in refreshToken/enabled');
     if (metaData.status !== 'authorized') throw Error('session is not found. Use signIn');
@@ -129,6 +133,23 @@ async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Pro
   } catch (e: any) {
     throw new LocalAuthError(`refreshTokenWithCheck > ${e.message}`);
   }
+}
+async function checkAndSaveQueryAuth(): Promise<void> {
+  const { options, state: { softSaveSession } } = await getContext();
+  const route = useRoute();
+  const query = route.query;
+
+  const isTokenReading = options.token.queryKey;
+  const isRefreshTokenReading = options.refreshToken.queryKey;
+
+  if (!isTokenReading) throw new LocalAuthError('checkAndSaveQueryAuth > token is not configure. Set key in token/queryKey');
+
+  try {
+    const token = query[isTokenReading] ?? null;
+    let refreshToken = query[isRefreshTokenReading!] ?? null;
+
+    if (token) softSaveSession(token as string, refreshToken as string | null);
+  } catch (e: any) {}
 }
 
 export function useLocalAuth() {
@@ -146,7 +167,8 @@ export function useLocalAuth() {
     signOut,
     getMe,
     refreshToken,
-    refreshTokenWithCheck
+    refreshTokenWithCheck,
+    checkAndSaveQueryAuth
   };
 
   return {

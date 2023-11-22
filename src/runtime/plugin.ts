@@ -5,10 +5,11 @@ import auth from "./middleware/auth";
 
 export default defineNuxtPlugin(async () => {
   const { options, state: { token, meta } } = await getContext();
-  const { getMe } = useLocalAuth();
+  const { getMe, checkAndSaveQueryAuth } = useLocalAuth();
   let pendingInterval: NodeJS.Timeout;
 
   try {
+    if (options.token.queryKey) await checkAndSaveQueryAuth();
     if (token.value) await getMe();
   } catch (e) {}
 

@@ -14,7 +14,7 @@ My new Nuxt module for doing amazing things.
 ## Features
 
 <!-- Highlight some of the features your module provide here -->
-- SignIn with url context token
+- self redirects paths in signIn, signUp, ... methods
 
 ## Quick Setup
 

@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     origin: 'https://catman-dev.atrinix.ru/api/v1/',
     token: {
       lifetime: 5,
-      path: 'access'
+      path: 'access',
+      queryKey: 'token'
     },
     sessions: {
       refreshEvery: 5000
