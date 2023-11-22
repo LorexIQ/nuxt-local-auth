@@ -88,6 +88,9 @@ interface ModuleOptionsPages {
   * get session data due to a timeout. Default: '/error'
   * */
   serverIsDown?: string;
+  /* Protecting all pages from guests. Default: false
+  * */
+  protectAllPages?: boolean
 }
 export interface ModuleOptions {
   /* Path to server. Default: ''
@@ -132,7 +135,9 @@ export default defineNuxtModule<ModuleOptions>({
     },
     pages: {
       auth: '/login',
-      defaultRedirect: '/'
+      defaultRedirect: '/',
+      serverIsDown: '/error',
+      protectAllPages: false,
     }
   },
   setup (options, nuxt) {

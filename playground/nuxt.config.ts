@@ -15,6 +15,9 @@ export default defineNuxtConfig({
     refreshToken: {
       enabled: true
     },
+    pages: {
+      protectAllPages: true
+    },
     endpoints: {
       signIn: { path: '/auth/', method: 'POST' },
       getMe: { path: 'users/me/', method: 'GET' },
