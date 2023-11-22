@@ -62,6 +62,7 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
     return meData;
   } catch (e: any) {
     if (e.statusCode) {
+      await signOut();
       throw new LocalAuthError(`getMe > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
     } else {
       throw new LocalAuthError(`getMe > ${e.message}`);

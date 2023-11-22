@@ -1,6 +1,11 @@
 import type {ModuleOptions} from "../module";
 import type {UseLocalAuthFetchConfig, UseLocalAuthResponse} from "./types";
-import {callWithNuxt, useNuxtApp, useRuntimeConfig} from "#app";
+import {
+  callWithNuxt,
+  useNuxtApp,
+  useRuntimeConfig,
+  navigateTo
+} from "#app";
 import useLocalAuthState from "./composables/useLocalAuthState";
 import useUtils from "./composables/useUtils";
 
@@ -24,14 +29,22 @@ export async function fetch<T extends UseLocalAuthResponse>(
     withToken: false,
     ..._config,
   }
-  const { state: { token, origin} } = await getContext();
+  const { options, state: { token, origin, meta} } = await getContext();
 
-  return await $fetch(
-    `${origin}/${trimStartWithSymbol(endpoint.path, '/')}`,
-    {
-      method: endpoint.method,
-      body: config.body,
-      headers: config.withToken ? { 'Authorization': token.value! } : {}
+  try {
+    return await $fetch(
+      `${origin}/${trimStartWithSymbol(endpoint.path, '/')}`,
+      {
+        method: endpoint.method,
+        body: config.body,
+        headers: config.withToken ? { 'Authorization': token.value! } : {}
+      }
+    );
+  } catch (e: any) {
+    if (!e.statusCode && options.pages.serverIsDown) {
+      meta.value.status = 'timeout';
+      navigateTo(options.pages.serverIsDown);
     }
-  );
+    throw Error(e);
+  }
 }

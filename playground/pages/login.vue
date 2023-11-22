@@ -12,9 +12,9 @@ function testAuth() {
 }
 
 definePageMeta({
-  // localAuth: {
-  //   unauthorizedOnly: true
-  // }
+  localAuth: {
+    unauthorizedOnly: true
+  }
 })
 </script>
 

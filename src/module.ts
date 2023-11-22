@@ -85,7 +85,9 @@ interface ModuleOptionsPages {
   * */
   defaultRedirect?: string;
   /* A page for catching a server shutdown when it is impossible to
-  * get session data due to a timeout. Default: '/error'
+  * get session data due to a timeout. Default: undefined
+  * Example #1: redirect to '/error'. value > '/error/
+  * Example #2: redirect is disabled. value > undefined
   * */
   serverIsDown?: string;
   /* Protecting all pages from guests. Default: false
