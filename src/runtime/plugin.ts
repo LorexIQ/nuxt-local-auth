@@ -4,7 +4,7 @@ import { getContext } from './helpers';
 import auth from "./middleware/auth";
 
 export default defineNuxtPlugin(async () => {
-  const { options, state: { token } } = await getContext();
+  const { options, state: { token, meta } } = await getContext();
   const { getMe } = useLocalAuth();
   let pendingInterval: NodeJS.Timeout;
 
@@ -13,11 +13,11 @@ export default defineNuxtPlugin(async () => {
   } catch (e) {}
 
   if (options.sessions.refreshEvery) {
-    watch(token, value => {
+    watch(meta, value => {
       clearInterval(pendingInterval);
       if (value) {
         pendingInterval = setInterval(async () => {
-          if (token.value) await getMe();
+          if (meta.value.token) await getMe();
           else clearInterval(pendingInterval);
         }, options.sessions.refreshEvery);
       }
