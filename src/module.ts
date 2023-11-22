@@ -7,7 +7,7 @@ import {
 } from '@nuxt/kit'
 import defu from "defu";
 
-export interface ModuleOptionsEndpointConfig {
+interface ModuleOptionsEndpointConfig {
   path: string;
   method: 'POST' | 'GET';
 }

@@ -1,4 +1,4 @@
-import type {ModuleOptions, ModuleOptionsEndpointConfig} from "../module";
+import type {ModuleOptions} from "../module";
 import type {UseLocalAuthFetchConfig, UseLocalAuthResponse} from "./types";
 import {callWithNuxt, useNuxtApp, useRuntimeConfig} from "#app";
 import useLocalAuthState from "./composables/useLocalAuthState";
@@ -17,7 +17,7 @@ export async function getContext() {
   };
 }
 export async function fetch<T extends UseLocalAuthResponse>(
-  endpoint: ModuleOptionsEndpointConfig,
+  endpoint: ModuleOptions['endpoints']['signIn'],
   _config: UseLocalAuthFetchConfig
 ): Promise<T> {
   const config: UseLocalAuthFetchConfig = {
