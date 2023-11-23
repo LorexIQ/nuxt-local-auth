@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.2.2
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.1...v1.2.2)
+
+### 🩹 Fixes
+
+- Add check refresh token to getMe method ([1ebac89](https://github.com/LorexIQ/nuxt-local-auth/commit/1ebac89))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.2.1
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.0...v1.2.1)
