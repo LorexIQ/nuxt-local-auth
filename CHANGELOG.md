@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.2.1
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.0...v1.2.1)
+
+### 🩹 Fixes
+
+- GetMe init with check query auth ([c678642](https://github.com/LorexIQ/nuxt-local-auth/commit/c678642))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.2.0
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.1.3...v1.2.0)
