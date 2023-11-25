@@ -45,6 +45,6 @@ export async function fetch<T extends UseLocalAuthResponse>(
       meta.value.status = 'timeout';
       navigateTo(options.pages.serverIsDown);
     }
-    throw Error(e);
+    throw e;
   }
 }

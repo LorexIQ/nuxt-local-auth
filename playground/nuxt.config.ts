@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   localAuth: {
     origin: 'https://catman-dev.atrinix.ru/api/v1/',
     token: {
-      lifetime: 5,
+      lifetime: 60 * 60 * 24,
       path: 'access',
       queryKey: 'token'
     },
