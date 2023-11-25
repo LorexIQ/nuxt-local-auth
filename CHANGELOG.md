@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.2.3
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.2...v1.2.3)
+
+### 🩹 Fixes
+
+- Refresh token algorithm ([f7b5252](https://github.com/LorexIQ/nuxt-local-auth/commit/f7b5252))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.2.2
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.1...v1.2.2)
