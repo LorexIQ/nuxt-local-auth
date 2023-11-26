@@ -1,12 +1,12 @@
-import type { ModuleOptions } from "../../module";
 import type { Ref } from "vue";
 import type {
+  ModuleOptions,
   UseLocalAuthResponse,
   UseLocalAuthCredentials,
   UseLocalAuthSession
 } from '../types';
 import useUtils from "../composables/useUtils";
-import {computed, watch} from "vue";
+import { computed, watch } from "vue";
 import { useCookie, useState, useRuntimeConfig } from "#app";
 
 const { trimWithSymbol } = useUtils();

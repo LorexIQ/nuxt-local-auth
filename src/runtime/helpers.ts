@@ -1,5 +1,8 @@
-import type {ModuleOptions} from "../module";
-import type {UseLocalAuthFetchConfig, UseLocalAuthResponse} from "./types";
+import type {
+  ModuleOptions,
+  UseLocalAuthFetchConfig,
+  UseLocalAuthResponse
+} from "./types";
 import {
   callWithNuxt,
   useNuxtApp,

@@ -1,7 +1,10 @@
 import type {
   UseLocalAuthData,
   UseLocalAuthConfig,
-  UseLocalAuthResponse
+  UseLocalAuthResponse,
+  UseLocalAuthReturn,
+  UseLocalAuthReturnData,
+  UseLocalAuthReturnMethods
 } from '../types';
 import { useRouter, useRoute } from '#app';
 import { computed } from 'vue';
@@ -157,16 +160,16 @@ async function checkAndSaveQueryAuth(): Promise<void> {
   } catch (e: any) {}
 }
 
-export function useLocalAuth() {
+export function useLocalAuth(): UseLocalAuthReturn {
   const { data, meta, token } = useLocalAuthState()
 
-  const getters = {
+  const getters: UseLocalAuthReturnData = {
     data: computed(() => data.value),
     meta,
     token
   };
 
-  const actions = {
+  const actions: UseLocalAuthReturnMethods = {
     signIn,
     signUp,
     signOut,
