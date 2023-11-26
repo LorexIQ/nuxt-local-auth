@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.2.4
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.3...v1.2.4)
+
+### 🩹 Fixes
+
+- Write a documentation ([528bd97](https://github.com/LorexIQ/nuxt-local-auth/commit/528bd97))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.2.3
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.2...v1.2.3)
