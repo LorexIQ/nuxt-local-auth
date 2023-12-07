@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.3.1
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.3.0...v1.3.1)
+
+### 🩹 Fixes
+
+- Disable check query auth errors in console ([760cd45](https://github.com/LorexIQ/nuxt-local-auth/commit/760cd45))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.3.0
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.5...v1.3.0)
