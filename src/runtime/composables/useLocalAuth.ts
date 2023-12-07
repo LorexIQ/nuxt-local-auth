@@ -6,7 +6,7 @@ import type {
   UseLocalAuthReturnData,
   UseLocalAuthReturnMethods
 } from '../types';
-import { useRouter, useRoute } from '#app';
+import { useRouter, useRoute } from 'nuxt/app';
 import { computed } from 'vue';
 import { LocalAuthError } from '../errors';
 import { fetch, getContext } from '../helpers';
@@ -153,7 +153,7 @@ async function checkAndSaveQueryAuth(): Promise<void> {
 
   try {
     const token = query[isTokenReading] ?? null;
-    let refreshToken = query[isRefreshTokenReading!] ?? null;
+    const refreshToken = query[isRefreshTokenReading!] ?? null;
 
     if (token) softSaveMeta(token as string, refreshToken as string | null);
   } catch (e: any) {}
