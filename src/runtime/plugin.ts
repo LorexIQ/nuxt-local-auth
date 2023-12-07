@@ -1,7 +1,8 @@
-import { defineNuxtPlugin, addRouteMiddleware } from '#app'
-import { useLocalAuth, watch } from '#imports'
+import { defineNuxtPlugin, addRouteMiddleware } from 'nuxt/app'
 import { getContext } from './helpers';
 import auth from "./middleware/auth";
+import {useLocalAuth} from "./composables/useLocalAuth";
+import {watch} from "vue";
 
 export default defineNuxtPlugin(async () => {
   const { options, state: { token, meta } } = await getContext();
@@ -17,7 +18,8 @@ export default defineNuxtPlugin(async () => {
     console.error(e);
   }
 
-  if (options.sessions.refreshEvery) {
+  // eslint-disable-next-line
+  if (!!options.sessions.refreshEvery) {
     watch(meta, value => {
       clearInterval(pendingInterval);
       if (value) {

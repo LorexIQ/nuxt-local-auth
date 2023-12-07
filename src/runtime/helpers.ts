@@ -8,7 +8,7 @@ import {
   useNuxtApp,
   useRuntimeConfig,
   navigateTo
-} from "#app";
+} from "nuxt/app";
 import useLocalAuthState from "./composables/useLocalAuthState";
 import useUtils from "./composables/useUtils";
 

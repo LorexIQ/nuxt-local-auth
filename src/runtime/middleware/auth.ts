@@ -1,6 +1,6 @@
-import { defineNuxtRouteMiddleware, navigateTo } from '#imports';
 import useUtils from "../composables/useUtils";
 import { getContext } from "../helpers";
+import {defineNuxtRouteMiddleware, navigateTo} from "nuxt/app";
 
 type MiddlewareMeta = boolean | {
   unauthorizedOnly?: boolean;

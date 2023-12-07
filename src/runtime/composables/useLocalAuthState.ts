@@ -7,7 +7,7 @@ import type {
 } from '../types';
 import useUtils from "../composables/useUtils";
 import { computed, watch } from "vue";
-import { useCookie, useState, useRuntimeConfig } from "#app";
+import {useCookie, useRuntimeConfig, useState} from "nuxt/app";
 
 const { trimWithSymbol } = useUtils();
 
