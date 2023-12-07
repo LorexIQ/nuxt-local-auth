@@ -36,6 +36,7 @@ export interface UseLocalAuthReturn extends UseLocalAuthReturnData, UseLocalAuth
 export interface UseLocalAuthReturnData {
   data: ComputedRef<UseLocalAuthCredentials>;
   meta: Ref<UseLocalAuthSession>;
+  origin: string;
   token: ComputedRef<string | null>;
 }
 export interface UseLocalAuthReturnMethods {
@@ -66,6 +67,12 @@ export interface ModuleOptions {
   pages: ModuleOptionsPages;
 }
 interface ModuleOptionsSession {
+  /* Path to session data. Default: undefined
+  * Example #1: { ... } > value: undefined
+  * Example #2: { data: ... } > value: 'data'
+  * Example #2: { data: { user: ... } } > value: 'data/user'
+  * */
+  path?: string;
   /* Enabled refresh user data every N ms. Default: undefined
   * Example: one getMe request in 5 seconds. value > 5000
   * Example: disable refresh. value > undefined
@@ -149,7 +156,7 @@ interface ModuleOptionsPages {
   * */
   serverIsDown?: string;
   /* Protecting all pages from guests. Default: false */
-  protectAllPages?: boolean
+  protectAllPages?: boolean;
 }
 interface ModuleOptionsEndpointConfig {
   path: string;

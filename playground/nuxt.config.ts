@@ -4,13 +4,14 @@ export default defineNuxtConfig({
   //modules: ['nuxt-local-auth'],
 
   localAuth: {
-    origin: 'https://catman-dev.atrinix.ruf/api/v1/',
+    origin: 'https://catman-dev.atrinix.ru/api/v1/',
     token: {
       lifetime: 60 * 60 * 24,
       path: 'access',
       queryKey: 'token'
     },
     sessions: {
+      path: 'data',
       refreshEvery: 5000
     },
     refreshToken: {

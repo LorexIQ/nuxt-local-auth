@@ -16,6 +16,7 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     origin: '',
     sessions: {
+      path: undefined,
       refreshEvery: undefined,
       cookiePrefix: 'localAuth',
     },
