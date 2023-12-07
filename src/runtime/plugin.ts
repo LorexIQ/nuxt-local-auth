@@ -10,9 +10,7 @@ export default defineNuxtPlugin(async () => {
 
   try {
     if (options.token.queryKey) await checkAndSaveQueryAuth();
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
   try {
     if (token.value) await getMe();
   } catch (e) {
