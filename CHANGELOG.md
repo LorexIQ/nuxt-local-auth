@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.3.0
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.5...v1.3.0)
+
+### 🚀 Enhancements
+
+- Add path to parse data object in getMe route ([abd9542](https://github.com/LorexIQ/nuxt-local-auth/commit/abd9542))
+
+### 🩹 Fixes
+
+- Types and bugs ([eb7b18c](https://github.com/LorexIQ/nuxt-local-auth/commit/eb7b18c))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.2.5
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.4...v1.2.5)
