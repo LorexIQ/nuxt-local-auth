@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.2.5
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.4...v1.2.5)
+
+### 🩹 Fixes
+
+- Remove console log and fix serverIsDown default value ([d4e8062](https://github.com/LorexIQ/nuxt-local-auth/commit/d4e8062))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.2.4
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.2.3...v1.2.4)
