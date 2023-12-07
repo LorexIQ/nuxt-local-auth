@@ -41,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
     pages: {
       auth: '/login',
       defaultRedirect: '/',
-      serverIsDown: '/error',
+      serverIsDown: undefined,
       protectAllPages: false,
     }
   },

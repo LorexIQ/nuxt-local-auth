@@ -77,7 +77,7 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   if (!token.value) throw new LocalAuthError('getMe > token is null. SignIn first');
 
   try {
-    console.log(await refreshTokenWithCheck())
+    await refreshTokenWithCheck();
   } catch (e) {}
 
   try {
