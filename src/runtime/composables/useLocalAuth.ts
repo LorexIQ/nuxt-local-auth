@@ -13,14 +13,14 @@ import { fetch, getContext } from '../helpers';
 import useLocalAuthState from './useLocalAuthState';
 
 async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
-  const { options, state: { saveSession } } = await getContext();
+  const { options, state: { saveMeta } } = await getContext();
   const router = useRouter();
   const endpointConfig = options.endpoints.signIn!;
 
   try {
     const authData = await fetch<T>(endpointConfig, { body: data });
 
-    saveSession(authData);
+    saveMeta(authData);
     await getMe();
     await router.push(config?.redirectTo ?? options.pages.defaultRedirect!);
 
@@ -31,7 +31,7 @@ async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
   }
 }
 async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
-  const { options, state: { saveSession } } = await getContext();
+  const { options, state: { saveMeta } } = await getContext();
   const router = useRouter();
   const endpointConfig = options.endpoints.signUp!;
 
@@ -40,7 +40,7 @@ async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
   try {
     const signUpData = await fetch<T>(endpointConfig, { body: data });
 
-    saveSession(signUpData);
+    saveMeta(signUpData);
     await getMe();
     await router.push(config?.redirectTo ?? options.pages.defaultRedirect!);
 
@@ -51,7 +51,7 @@ async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
   }
 }
 async function signOut<T extends UseLocalAuthResponse = {}>(config?: UseLocalAuthConfig): Promise<T> {
-  const { options, state: { clearSession } } = await getContext();
+  const { options, state: { clearMeta } } = await getContext();
   const router = useRouter();
   const endpointConfig = options.endpoints.signOut!;
 
@@ -61,17 +61,17 @@ async function signOut<T extends UseLocalAuthResponse = {}>(config?: UseLocalAut
     } catch (e: any) {
       throw new LocalAuthError(`signOut > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
     } finally {
-      clearSession();
+      clearMeta();
       await router.push(config?.redirectTo ?? options.pages.auth!);
     }
   } else {
-    clearSession();
+    clearMeta();
     await router.push(config?.redirectTo ?? options.pages.auth!);
     return {} as T;
   }
 }
 async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
-  const { options, state: { token, data, meta } } = await getContext();
+  const { options, state: { token, saveSession } } = await getContext();
   const endpointConfig = options.endpoints.getMe!;
 
   if (!token.value) throw new LocalAuthError('getMe > token is null. SignIn first');
@@ -83,8 +83,7 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   try {
     const meData = await fetch<T>(endpointConfig, { withToken: true });
 
-    Object.assign(data.value, meData);
-    meta.value.status = 'authorized';
+    saveSession(meData);
 
     return meData;
   } catch (e: any) {
@@ -97,7 +96,7 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   }
 }
 async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
-  const { options, state: { meta, saveSession } } = await getContext();
+  const { options, state: { meta, saveMeta } } = await getContext();
   const endpointConfig = options.endpoints.refreshToken!;
   const refreshConfig = options.refreshToken;
 
@@ -111,7 +110,7 @@ async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
         }
       });
 
-      saveSession({
+      saveMeta({
         [`${refreshConfig.path}`]: meta.value.refreshToken,
         ...refreshData
       }, true);
@@ -143,7 +142,7 @@ async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Pro
   }
 }
 async function checkAndSaveQueryAuth(): Promise<void> {
-  const { options, state: { softSaveSession } } = await getContext();
+  const { options, state: { softSaveMeta } } = await getContext();
   const route = useRoute();
   const query = route.query;
 
@@ -156,16 +155,17 @@ async function checkAndSaveQueryAuth(): Promise<void> {
     const token = query[isTokenReading] ?? null;
     let refreshToken = query[isRefreshTokenReading!] ?? null;
 
-    if (token) softSaveSession(token as string, refreshToken as string | null);
+    if (token) softSaveMeta(token as string, refreshToken as string | null);
   } catch (e: any) {}
 }
 
 export function useLocalAuth(): UseLocalAuthReturn {
-  const { data, meta, token } = useLocalAuthState()
+  const { data, meta, token, origin } = useLocalAuthState()
 
   const getters: UseLocalAuthReturnData = {
     data: computed(() => data.value),
     meta,
+    origin,
     token
   };
 
