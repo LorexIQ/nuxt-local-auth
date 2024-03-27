@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.4.0
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.3.1...v1.4.0)
+
+### 🚀 Enhancements
+
+- Add maxAge cookies && fix throttle getMe endpoint ([13982ec](https://github.com/LorexIQ/nuxt-local-auth/commit/13982ec))
+
+### 🏡 Chore
+
+- **release:** V1.3.1 ([a203fb4](https://github.com/LorexIQ/nuxt-local-auth/commit/a203fb4))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.3.1
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.3.0...v1.3.1)
