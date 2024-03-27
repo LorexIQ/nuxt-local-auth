@@ -9,7 +9,7 @@ import useUtils from "../composables/useUtils";
 import { computed, watch } from "vue";
 import { useCookie, useState, useRuntimeConfig } from "#app";
 
-const { trimWithSymbol } = useUtils();
+const { trimEndWithSymbol } = useUtils();
 
 export default function () {
   const options = useRuntimeConfig().public.localAuth as ModuleOptions;
@@ -45,7 +45,7 @@ export default function () {
   }, { immediate: true }));
 
   const token = computed(() => sessionMetaInfo.value.token ? `${options.token.type} ${sessionMetaInfo.value.token}`.trim() : null);
-  const origin = trimWithSymbol(options.origin, '/');
+  const origin = trimEndWithSymbol(options.origin, '/');
 
   function parseValueWithPath<T = string>(data: UseLocalAuthResponse, path: string): T | undefined {
     return path

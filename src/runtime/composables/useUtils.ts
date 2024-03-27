@@ -10,6 +10,11 @@ class Utils {
 
     return str.substring(startTrim ? symbol.length : 0);
   }
+  trimEndWithSymbol(str: string, symbol: string): string {
+    const endTrim = str.endsWith(symbol);
+
+    return str.substring(0, endTrim ? str.length - symbol.length : str.length);
+  }
 }
 
 const utils = new Utils();
