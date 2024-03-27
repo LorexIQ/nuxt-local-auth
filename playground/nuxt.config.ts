@@ -1,17 +1,26 @@
+const env = {
+  serverOrigin: process.env.SERVER_ORIGIN ?? '/'
+};
+
 export default defineNuxtConfig({
   ssr: false,
   modules: ['../src/module'],
   //modules: ['nuxt-local-auth'],
 
+  runtimeConfig: {
+    public: {
+      ...env
+    }
+  },
+
   localAuth: {
-    origin: 'https://catman-dev.atrinix.ru/api/v1/',
+    origin: env.serverOrigin,
     token: {
       lifetime: 60 * 60 * 24,
       path: 'access',
       queryKey: 'token'
     },
     sessions: {
-      path: 'data',
       refreshEvery: 5000
     },
     refreshToken: {

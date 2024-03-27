@@ -1,6 +1,9 @@
 export class LocalAuthError extends Error {
-    constructor(message: string = '') {
-        super(message);
-        this.name = 'LocalAuthError';
-    }
+  error?: Error;
+
+  constructor(e?: Error, message?: string, handler?: string) {
+      super((handler ? (handler + (message ? ': ' : '')) : '') + message);
+      this.name = 'LocalAuthError';
+      this.error = e;
+  }
 }

@@ -36,15 +36,14 @@ export async function fetch<T extends UseLocalAuthResponse>(
 
   try {
     return await $fetch(
-      `${origin}/${trimStartWithSymbol(endpoint.path, '/')}`,
+      `${origin}/${trimStartWithSymbol(endpoint!.path, '/')}`,
       {
-        method: endpoint.method,
+        method: endpoint!.method,
         body: config.body,
         headers: config.withToken ? { 'Authorization': token.value! } : {}
       }
     );
   } catch (e: any) {
-    console.log(options)
     if (!e.statusCode && options.pages.serverIsDown) {
       meta.value.status = 'timeout';
       navigateTo(options.pages.serverIsDown);

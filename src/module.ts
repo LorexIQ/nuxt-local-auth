@@ -46,7 +46,7 @@ export default defineNuxtModule<ModuleOptions>({
       protectAllPages: false,
     }
   },
-  setup (options, nuxt) {
+  setup: function (options, nuxt) {
     const resolver = createResolver(import.meta.url);
     nuxt.options.runtimeConfig.public.localAuth = defu(
       nuxt.options.runtimeConfig.public.localAuth,

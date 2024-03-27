@@ -15,7 +15,7 @@ export default function () {
   const options = useRuntimeConfig().public.localAuth as ModuleOptions;
 
   const sessionData = useState<UseLocalAuthCredentials>('localAuth:Credentials', () => ({}));
-  const cookieData = useState('localAuth:Cookie', () => useCookie<UseLocalAuthSession | null>(options.sessions.cookiePrefix!, { default: () => null }));
+  let cookieData = useState('localAuth:Cookie', () => useCookie<UseLocalAuthSession | null>(options.sessions.cookiePrefix!, { default: () => null }));
   const sessionMetaInfo: Ref<UseLocalAuthSession> = useState('localAuth:Meta', () => ({
     token: null,
     refreshToken: null,
@@ -25,6 +25,10 @@ export default function () {
 
   useState('localAuth:CookieWatcher', () => watch(sessionMetaInfo, (value, oldValue) => {
     if (oldValue) {
+      cookieData = useCookie<UseLocalAuthSession | null>(options.sessions.cookiePrefix!, {
+        default: () => null,
+        maxAge: value.exp! - Math.round(Date.now() / 1000)
+      });
       cookieData.value = value.token ? value : null;
     } else {
       try {
@@ -36,7 +40,7 @@ export default function () {
           value.exp = decodeCookie.exp;
           value.status = decodeCookie.status;
         }
-      } catch (e) {}
+      } catch (e) { /* empty */ }
     }
   }, { immediate: true }));
 
@@ -76,15 +80,14 @@ export default function () {
 
     sessionMetaInfo.value.token = token;
     sessionMetaInfo.value.refreshToken = refreshToken;
-    sessionMetaInfo.value.exp = `${Math.round(Date.now() / 1000) + (options.token.lifetime as number)}`;
+    sessionMetaInfo.value.exp = Math.round(Date.now() / 1000) + (options.token.lifetime as number);
   }
   function saveMeta(data: UseLocalAuthResponse, metaUpdate: boolean = false): void {
     metaUpdate ? softClearMeta() : clearMeta();
-    let parsedToken: string | undefined,
-      parsedRefreshToken: string | undefined,
-      parsedLifetime: string | undefined;
+    let parsedRefreshToken: string | undefined,
+      parsedLifetime: number | undefined;
 
-    parsedToken = parseValueWithPath(data, options.token.path);
+    const parsedToken = parseValueWithPath(data, options.token.path);
     if (!parsedToken) throw new Error('error parse auth token. Check current token/path');
 
     if (options.refreshToken.enabled) {
@@ -93,16 +96,16 @@ export default function () {
     }
 
     const lifetime = options.token.lifetime as string | number;
-    if (typeof options.token.lifetime === 'string') {
-      parsedLifetime = parseValueWithPath(data, options.token.lifetime!);
+    if (typeof lifetime === 'string') {
+      parsedLifetime = parseValueWithPath<number>(data, lifetime);
       if (!parsedLifetime) throw new Error('error parse lifetime token. Check current token/lifetime');
     } else {
-      parsedLifetime = `${Math.round(Date.now() / 1000) + (lifetime as number)}`;
+      parsedLifetime = Math.round(Date.now() / 1000) + lifetime;
     }
 
     sessionMetaInfo.value.token = parsedToken as string;
     sessionMetaInfo.value.refreshToken = parsedRefreshToken as string;
-    sessionMetaInfo.value.exp = `${parsedLifetime}`;
+    sessionMetaInfo.value.exp = parsedLifetime;
   }
   function clearSession(): void {
     sessionMetaInfo.value.status = 'unauthorized';

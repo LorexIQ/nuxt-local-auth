@@ -12,6 +12,8 @@ import { LocalAuthError } from '../errors';
 import { fetch, getContext } from '../helpers';
 import useLocalAuthState from './useLocalAuthState';
 
+const u = undefined;
+
 async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
   const { options, state: { saveMeta } } = await getContext();
   const router = useRouter();
@@ -26,7 +28,7 @@ async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
 
     return authData;
   } catch (e: any) {
-    if (e.response) throw new LocalAuthError(`signIn > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+    if (e.response) throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, signIn.name);
     else throw new LocalAuthError(e.message);
   }
 }
@@ -35,7 +37,7 @@ async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
   const router = useRouter();
   const endpointConfig = options.endpoints.signUp!;
 
-  if (!endpointConfig) throw new LocalAuthError('signUp > signUp is disabled. Enable it in endpoints/signUp');
+  if (!endpointConfig) throw new LocalAuthError(u, 'signUp is disabled. Enable it in endpoints/signUp', signUp.name);
 
   try {
     const signUpData = await fetch<T>(endpointConfig, { body: data });
@@ -46,7 +48,7 @@ async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
 
     return signUpData;
   } catch (e: any) {
-    if (e.response) throw new LocalAuthError(`signUp > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+    if (e.response) throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, signUp.name);
     else throw new LocalAuthError(e.message);
   }
 }
@@ -59,7 +61,7 @@ async function signOut<T extends UseLocalAuthResponse = {}>(config?: UseLocalAut
     try {
       return await fetch<T>(endpointConfig, { withToken: true });
     } catch (e: any) {
-      throw new LocalAuthError(`signOut > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+      throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, signOut.name);
     } finally {
       clearMeta();
       await router.push(config?.redirectTo ?? options.pages.auth!);
@@ -74,11 +76,11 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   const { options, state: { token, saveSession } } = await getContext();
   const endpointConfig = options.endpoints.getMe!;
 
-  if (!token.value) throw new LocalAuthError('getMe > token is null. SignIn first');
+  if (!token.value) throw new LocalAuthError(u, 'token is null. SignIn first', getMe.name);
 
   try {
     await refreshTokenWithCheck();
-  } catch (e) {}
+  } catch (e) { /* empty */ }
 
   try {
     const meData = await fetch<T>(endpointConfig, { withToken: true });
@@ -89,9 +91,9 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   } catch (e: any) {
     if (e.statusCode) {
       await signOut();
-      throw new LocalAuthError(`getMe > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+      throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, 'getMe');
     } else {
-      throw new LocalAuthError(`getMe > ${e.message}`);
+      throw new LocalAuthError(e, `getMe > ${e.message}`);
     }
   }
 }
@@ -101,7 +103,7 @@ async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   const refreshConfig = options.refreshToken;
 
   if (refreshConfig.enabled) {
-    if (!meta.value.refreshToken) throw new LocalAuthError(`refreshToken > refreshToken is null`);
+    if (!meta.value.refreshToken) throw new LocalAuthError(u, `refreshToken is null`, refreshToken.name);
 
     try {
       const refreshData = await fetch<T>(endpointConfig, {
@@ -118,18 +120,18 @@ async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
       return refreshData;
     } catch (e: any) {
       await signOut();
-      throw new LocalAuthError(`refreshToken > [${e.statusCode}] > ${JSON.stringify(e.response._data)}`);
+      throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, refreshToken.name);
     }
 
   } else {
-    throw new LocalAuthError('refreshToken > refresh token is disabled. Enable it in refreshToken/enabled');
+    throw new LocalAuthError(u, 'refresh token is disabled. Enable it in refreshToken/enabled', refreshToken.name);
   }
 }
 async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Promise<T | null> {
   const { options: { refreshToken: refreshTokenConfig }, state: { meta } } = await getContext();
   const metaData = meta.value;
 
-  if (!metaData.refreshToken) throw new LocalAuthError(`refreshTokenWithCheck > refreshToken is null`);
+  if (!metaData.refreshToken) throw new LocalAuthError(u, `refreshToken is null`, refreshTokenWithCheck.name);
 
   try {
     if (!refreshTokenConfig.enabled) throw Error('refresh token is disabled. Enable it in refreshToken/enabled');
@@ -138,7 +140,7 @@ async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Pro
 
     return await refreshToken<T>();
   } catch (e: any) {
-    throw new LocalAuthError(`refreshTokenWithCheck > ${e.message}`);
+    throw new LocalAuthError(e, `${e.message}`, refreshTokenWithCheck.name);
   }
 }
 async function checkAndSaveQueryAuth(): Promise<void> {
@@ -149,14 +151,14 @@ async function checkAndSaveQueryAuth(): Promise<void> {
   const isTokenReading = options.token.queryKey;
   const isRefreshTokenReading = options.refreshToken.queryKey;
 
-  if (!isTokenReading) throw new LocalAuthError('checkAndSaveQueryAuth > token is not configure. Set key in token/queryKey');
+  if (!isTokenReading) throw new LocalAuthError(u, 'token is not configure. Set key in token/queryKey', checkAndSaveQueryAuth.name);
 
   try {
     const token = query[isTokenReading] ?? null;
-    let refreshToken = query[isRefreshTokenReading!] ?? null;
+    const refreshToken = query[isRefreshTokenReading!] ?? null;
 
     if (token) softSaveMeta(token as string, refreshToken as string | null);
-  } catch (e: any) {}
+  } catch (e: any) { /* empty */ }
 }
 
 export function useLocalAuth(): UseLocalAuthReturn {

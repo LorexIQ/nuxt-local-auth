@@ -9,13 +9,15 @@ export default defineNuxtPlugin(async () => {
   let pendingInterval: NodeJS.Timeout;
 
   try {
-    if (options.token.queryKey) await checkAndSaveQueryAuth();
-  } catch (e) {}
+    if (options.token.queryKey) {
+      await checkAndSaveQueryAuth();
+    }
+  } catch (e) { /* empty */ }
   try {
-    if (token.value) await getMe();
-  } catch (e) {
-    console.error(e);
-  }
+    if (token.value) {
+      await getMe();
+    }
+  } catch (e) { /* empty */ }
 
   if (options.sessions.refreshEvery) {
     watch(meta, value => {

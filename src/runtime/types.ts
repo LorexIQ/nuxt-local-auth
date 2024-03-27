@@ -24,7 +24,7 @@ export type UseLocalAuthStatus =
 export interface UseLocalAuthSession {
   token: string | null;
   refreshToken: string | null;
-  exp: string | null;
+  exp: number | null;
   status: UseLocalAuthStatus;
 }
 export interface UseLocalAuthFetchConfig {
@@ -128,12 +128,12 @@ interface ModuleOptionsEndpoints {
   * path: 'auth/signIn'
   * method: 'POST'
   * */
-  signIn: ModuleOptionsEndpointConfig;
+  signIn?: ModuleOptionsEndpointConfig;
   /* Get authorized user info config. Default:
   * path: 'users/me'
   * method: 'GET'
   * */
-  getMe: ModuleOptionsEndpointConfig;
+  getMe?: ModuleOptionsEndpointConfig;
   /* Refresh token config. Default:
   * path: 'auth/refresh
   * method: 'POST'
