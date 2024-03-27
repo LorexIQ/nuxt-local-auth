@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.4.1
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.4.0...v1.4.1)
+
+### 🩹 Fixes
+
+- Origin path preparing ([22b5c32](https://github.com/LorexIQ/nuxt-local-auth/commit/22b5c32))
+
+### ❤️ Contributors
+
+- LorexIQ <murashko100500@gmail.com>
+
 ## v1.4.0
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.3.1...v1.4.0)
