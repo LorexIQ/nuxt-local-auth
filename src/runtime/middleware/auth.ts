@@ -1,21 +1,21 @@
-import { defineNuxtRouteMiddleware, navigateTo } from '#imports';
+import { defineNuxtRouteMiddleware, navigateTo, createError } from '#imports';
 import useUtils from "../composables/useUtils";
 import { getContext } from "../helpers";
 
-type MiddlewareMeta = boolean | {
+export type MiddlewareMeta = boolean | {
   unauthorizedOnly?: boolean;
   authorizedOnly?: boolean;
 };
 
 declare module '#app/../pages/runtime/composables' {
-  interface PageMeta {
+  export interface PageMeta {
     localAuth?: MiddlewareMeta;
   }
 }
 
 export default defineNuxtRouteMiddleware(async to => {
   const { options, state: { meta} } = await getContext();
-  const { trimStartWithSymbol, trimWithSymbol } = useUtils();
+  const { trimStartWithSymbol } = useUtils();
 
   const metaAuth = typeof to.meta.localAuth === 'object' ?
     {
@@ -27,8 +27,7 @@ export default defineNuxtRouteMiddleware(async to => {
 
   if (
     !metaAuth &&
-    !options.pages.protectAllPages ||
-    [trimWithSymbol(options.pages.serverIsDown!, '/')].includes(trimWithSymbol(to.path, '/'))
+    !options.pages.protectAllPages
   ) return;
   if (metaAuth === false) return;
 
@@ -37,8 +36,14 @@ export default defineNuxtRouteMiddleware(async to => {
   const isUnauthorizedOnly = typeof metaAuth === 'object' ? metaAuth.unauthorizedOnly : false;
   const isAuthorizedOnly = typeof metaAuth === 'object' ? metaAuth.authorizedOnly : false;
 
-  if (isTimeout && options.pages.serverIsDown && to.path !== options.pages.serverIsDown) {
-    return navigateTo(`/${trimStartWithSymbol(options.pages.serverIsDown!, '/')}`);
+  if (isTimeout && options.pages.handleIsServerDown) {
+    throw createError({
+      statusCode: 504,
+      statusMessage: 'ERR_CONNECTION_TIMED_OUT',
+      data: {
+        description: 'Ошибка соединения с сервером, возможно он обслуживается. Попробуйте ещё раз позже'
+      }
+    });
   }
   if (isAuthorized && to.path !== options.pages.defaultRedirect && isUnauthorizedOnly) {
     return navigateTo(`/${trimStartWithSymbol(options.pages.defaultRedirect!, '/')}`);

@@ -6,8 +6,7 @@ import type {
 import {
   callWithNuxt,
   useNuxtApp,
-  useRuntimeConfig,
-  navigateTo
+  useRuntimeConfig
 } from "#app";
 import useLocalAuthState from "./composables/useLocalAuthState";
 import useUtils from "./composables/useUtils";
@@ -44,9 +43,8 @@ export async function fetch<T extends UseLocalAuthResponse>(
       }
     );
   } catch (e: any) {
-    if (!e.statusCode && options.pages.serverIsDown) {
+    if (!e.statusCode && options.pages.handleIsServerDown) {
       meta.value.status = 'timeout';
-      navigateTo(options.pages.serverIsDown);
     }
     throw e;
   }

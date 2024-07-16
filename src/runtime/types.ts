@@ -150,11 +150,11 @@ interface ModuleOptionsPages {
   /* The standard page where to redirect the user after logging in. Default: '/' */
   defaultRedirect?: string;
   /* A page for catching a server shutdown when it is impossible to
-  * get session data due to a timeout. Default: undefined
-  * Example #1: redirect to '/error'. value > '/error/
-  * Example #2: redirect is disabled. value > undefined
+  * get session data due to a timeout. Default: false
+  * Example #1: use error.vue. value > true
+  * Example #2: use handler is disabled. value > false
   * */
-  serverIsDown?: string;
+  handleIsServerDown?: boolean;
   /* Protecting all pages from guests. Default: false */
   protectAllPages?: boolean;
 }

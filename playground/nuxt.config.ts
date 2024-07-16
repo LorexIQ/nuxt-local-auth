@@ -17,23 +17,20 @@ export default defineNuxtConfig({
     origin: env.serverOrigin,
     token: {
       lifetime: 60 * 60 * 24,
-      path: 'access',
+      path: 'token',
       queryKey: 'token'
     },
     sessions: {
       refreshEvery: 5000
     },
-    refreshToken: {
-      enabled: true
-    },
     pages: {
       protectAllPages: true,
-      serverIsDown: undefined
+      handleIsServerDown: true
     },
     endpoints: {
-      signIn: { path: '/auth/', method: 'POST' },
+      signIn: { path: '/auth/authentication', method: 'POST' },
       signUp: { path: '/auth/reg', method: 'POST' },
-      getMe: { path: 'users/me/', method: 'GET' },
+      getMe: { path: 'user/me', method: 'GET' },
       refreshToken: { path: '/auth/refresh/', method: 'POST' }
     }
   },

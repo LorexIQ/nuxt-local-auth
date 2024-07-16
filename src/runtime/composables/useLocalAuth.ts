@@ -12,8 +12,6 @@ import { LocalAuthError } from '../errors';
 import { fetch, getContext } from '../helpers';
 import useLocalAuthState from './useLocalAuthState';
 
-const u = undefined;
-
 async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
   const { options, state: { saveMeta } } = await getContext();
   const router = useRouter();
@@ -29,7 +27,7 @@ async function signIn<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
     return authData;
   } catch (e: any) {
     if (e.response) throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, signIn.name);
-    else throw new LocalAuthError(e.message);
+    else throw new LocalAuthError(e, e.message);
   }
 }
 async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthData, config?: UseLocalAuthConfig): Promise<T> {
@@ -37,7 +35,7 @@ async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
   const router = useRouter();
   const endpointConfig = options.endpoints.signUp!;
 
-  if (!endpointConfig) throw new LocalAuthError(u, 'signUp is disabled. Enable it in endpoints/signUp', signUp.name);
+  if (!endpointConfig) throw new LocalAuthError(undefined, 'signUp is disabled. Enable it in endpoints/signUp', signUp.name);
 
   try {
     const signUpData = await fetch<T>(endpointConfig, { body: data });
@@ -49,7 +47,7 @@ async function signUp<T extends UseLocalAuthResponse = {}>(data: UseLocalAuthDat
     return signUpData;
   } catch (e: any) {
     if (e.response) throw new LocalAuthError(e, `[${e.statusCode}] > ${JSON.stringify(e.response._data)}`, signUp.name);
-    else throw new LocalAuthError(e.message);
+    else throw new LocalAuthError(e, e.message);
   }
 }
 async function signOut<T extends UseLocalAuthResponse = {}>(config?: UseLocalAuthConfig): Promise<T> {
@@ -76,7 +74,7 @@ async function getMe<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   const { options, state: { token, saveSession } } = await getContext();
   const endpointConfig = options.endpoints.getMe!;
 
-  if (!token.value) throw new LocalAuthError(u, 'token is null. SignIn first', getMe.name);
+  if (!token.value) throw new LocalAuthError(undefined, 'token is null. SignIn first', getMe.name);
 
   try {
     await refreshTokenWithCheck();
@@ -103,7 +101,7 @@ async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
   const refreshConfig = options.refreshToken;
 
   if (refreshConfig.enabled) {
-    if (!meta.value.refreshToken) throw new LocalAuthError(u, `refreshToken is null`, refreshToken.name);
+    if (!meta.value.refreshToken) throw new LocalAuthError(undefined, `refreshToken is null`, refreshToken.name);
 
     try {
       const refreshData = await fetch<T>(endpointConfig, {
@@ -124,14 +122,14 @@ async function refreshToken<T extends UseLocalAuthResponse = {}>(): Promise<T> {
     }
 
   } else {
-    throw new LocalAuthError(u, 'refresh token is disabled. Enable it in refreshToken/enabled', refreshToken.name);
+    throw new LocalAuthError(undefined, 'refresh token is disabled. Enable it in refreshToken/enabled', refreshToken.name);
   }
 }
 async function refreshTokenWithCheck<T extends UseLocalAuthResponse = {}>(): Promise<T | null> {
   const { options: { refreshToken: refreshTokenConfig }, state: { meta } } = await getContext();
   const metaData = meta.value;
 
-  if (!metaData.refreshToken) throw new LocalAuthError(u, `refreshToken is null`, refreshTokenWithCheck.name);
+  if (!metaData.refreshToken) throw new LocalAuthError(undefined, `refreshToken is null`, refreshTokenWithCheck.name);
 
   try {
     if (!refreshTokenConfig.enabled) throw Error('refresh token is disabled. Enable it in refreshToken/enabled');
@@ -151,7 +149,7 @@ async function checkAndSaveQueryAuth(): Promise<void> {
   const isTokenReading = options.token.queryKey;
   const isRefreshTokenReading = options.refreshToken.queryKey;
 
-  if (!isTokenReading) throw new LocalAuthError(u, 'token is not configure. Set key in token/queryKey', checkAndSaveQueryAuth.name);
+  if (!isTokenReading) throw new LocalAuthError(undefined, 'token is not configure. Set key in token/queryKey', checkAndSaveQueryAuth.name);
 
   try {
     const token = query[isTokenReading] ?? null;

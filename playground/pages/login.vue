@@ -4,8 +4,8 @@ const auth = useLocalAuth();
 function testAuth() {
   auth
     .signIn({
-      username: 'admin',
-      password: 'admin'
+      username: 'ao_admin',
+      password: 'ao_admin'
     })
     .then(res => console.log(res))
     .catch(e => console.error('Error', e))
