@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.4.2
+
+[compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.4.1...v1.4.2)
+
+### 🩹 Fixes
+
+- Refactor error from error page to error.vue and fix errors messages ([982d686](https://github.com/LorexIQ/nuxt-local-auth/commit/982d686))
+
+### 🏡 Chore
+
+- **release:** V1.4.1 ([6cd7aa7](https://github.com/LorexIQ/nuxt-local-auth/commit/6cd7aa7))
+
+### ❤️ Contributors
+
+- LorexIQ <i@liq-mail.ru>
+
 ## v1.4.1
 
 [compare changes](https://github.com/LorexIQ/nuxt-local-auth/compare/v1.4.0...v1.4.1)
